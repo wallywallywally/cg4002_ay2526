@@ -4,6 +4,8 @@ import socket
 import numpy as np
 from pynq import Overlay, allocate          # pynq logic cannot be tested outside the Ultra96
 
+# TODO: Consider logging?
+
 class GestureModel:
     """
     Encapsulate FPGA AI logic
@@ -17,6 +19,7 @@ class GestureModel:
         self.out_buffer = allocate(shape=(8,), dtype='f4')
 
     def predict(self, window_data):
+        # TODO: ensure model can accept the in_buffer shape
         self.in_buffer[:] = window_data
         
         self.dma.sendchannel.transfer(self.in_buffer)
@@ -48,6 +51,7 @@ class ClientConnection:
                 time.sleep(retry_time)
 
     def receive_live_data(self, buffer):
+        """Receive HW JSON data"""
         # add on to the end of buffer
         # I'm thinking we receive the latest sensor data
         # Maybe also timestamped so the code knows whether to add to sliding window?
