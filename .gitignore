@@ -1,1 +1,3 @@
-/ai/data/dummy/**/*.csv
+/ai/data/*
+
+!/ai/data/dummy/dummy_data_maker.upynb
