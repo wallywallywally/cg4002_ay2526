@@ -1,3 +1,5 @@
 /ai/data/*
+/ai/__pycache__
+/ai/hls_model
 
 !/ai/data/dummy/dummy_data_maker.ipynb
