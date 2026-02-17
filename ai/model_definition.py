@@ -1,25 +1,8 @@
 import torch
 import torch.nn as nn
 
-class LSTMClassifier(nn.Module):
-    def __init__(self, input_size, hidden_size, num_layers, num_classes):
-        super(LSTMClassifier, self).__init__()
-        self.hidden_size = hidden_size
-        self.num_layers = num_layers
-        
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
-        self.fc = nn.Linear(hidden_size, num_classes)
-
-    def forward(self, x):
-        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
-        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
-        
-        out, _ = self.lstm(x, (h0, c0))
-        out = self.fc(out[:, -1, :])
-        return out
-
 # 1D CNN -> comparable to RNN with less overhead
-# Output: (8 features, 25 rows)
+# Input: (8 features, 25 rows)
 class CNN1DClassifier(nn.Module):
     def __init__(self, input_size, num_classes):
         super(CNN1DClassifier, self).__init__()
@@ -49,6 +32,23 @@ class CNN1DClassifier(nn.Module):
         x = self.pool(x)
         x = x.squeeze(-1)
         return self.fc(x)
+    
+class LSTMClassifier(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, num_classes):
+        super(LSTMClassifier, self).__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, num_classes)
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.fc(out[:, -1, :])
+        return out
     
 # 3-layer MLP -> worst
 class MLPClassifier(nn.Module):
