@@ -1,0 +1,13 @@
+# Vitis HLS route
+
+In Python:
+1. Export model weights as .pth
+2. Convert weights to C++ header (weights.h)
+
+In Vitis:
+1. Create new HLS component
+2. Add source files
+   - Convert model from Python to C++, then set as hls.syn.top function in hls_config.cfg
+   - Copy weights.h into source folder
+3. Synthesise
+...
