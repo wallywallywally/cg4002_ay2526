@@ -6,30 +6,17 @@ import torch.nn as nn
 class CNN1DClassifier(nn.Module):
     def __init__(self, input_size, num_classes):
         super(CNN1DClassifier, self).__init__()
-
-        # self.conv_block = nn.Sequential(
-        #     nn.Conv1d(in_channels=input_size, out_channels=32, kernel_size=3),
-        #     nn.ReLU(),
-        #     nn.Conv1d(32, 64, kernel_size=3),
-        #     nn.ReLU(),
-        #     nn.AdaptiveAvgPool1d(1)
-        # )
-        # self.fc = nn.Linear(64, num_classes)
-
-        self.conv1 = nn.Conv1d(in_channels=input_size, out_channels=32, kernel_size=3)
-        self.act1 = nn.ReLU()
-        self.conv2 = nn.Conv1d(in_channels=32, out_channels=64, kernel_size=3)
-        self.act2 = nn.ReLU()
-        self.pool  = nn.AvgPool1d(21)
+        self.conv_block = nn.Sequential(
+            nn.Conv1d(in_channels=input_size, out_channels=32, kernel_size=3),
+            nn.ReLU(),
+            nn.Conv1d(32, 64, kernel_size=3),
+            nn.ReLU(),
+            nn.AdaptiveAvgPool1d(1)
+        )
         self.fc = nn.Linear(64, num_classes)        # expects 64 x 8 = 512
 
     def forward(self, x):
-        # x = self.conv_block(x)
-        x = self.conv1(x)
-        x = self.act1(x)
-        x = self.conv2(x)
-        x = self.act2(x)
-        x = self.pool(x)
+        x = self.conv_block(x)
         x = x.squeeze(-1)
         return self.fc(x)
     
