@@ -5,6 +5,7 @@ model_to_hls
 ultra96_vivado
 
 !ai/data/dummy/dummy_data_maker.ipynb
-!model_to_hls/cg4002_cnn/cnn_test.cpp
-!model_to_hls/cg4002_cnn/cnn_test.cpp
+!model_to_hls/cg4002_cnn/README.md
+!model_to_hls/cg4002_cnn/cnn_top.h
+!model_to_hls/cg4002_cnn/cnn_top.cpp
 !model_to_hls/cg4002_cnn/cnn_test.cpp
