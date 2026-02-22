@@ -1,4 +1,4 @@
-# Files in this folder are for Vitis HLS 
+# Vitis HLS files 
 
 ### Source files
 - cnn_top.h
