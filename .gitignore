@@ -1,7 +1,10 @@
-/ai/data/*
-/ai/__pycache__
-/ai/hls4ml_exploration/hls_model
+ai/data/*
+ai/__pycache__
+ai/hls4ml_exploration/hls_model
 model_to_hls
 ultra96_vivado
 
-!/ai/data/dummy/dummy_data_maker.ipynb
+!ai/data/dummy/dummy_data_maker.ipynb
+!model_to_hls/cg4002_cnn/cnn_test.cpp
+!model_to_hls/cg4002_cnn/cnn_test.cpp
+!model_to_hls/cg4002_cnn/cnn_test.cpp
