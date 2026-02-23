@@ -1,0 +1,12 @@
+{
+    "chop": 0,
+    "knead": 1,
+    "select": 2,
+    "shake": 3,
+    "squeeze": 4,
+    "stir": 5,
+    "swipe_l": 6,
+    "swipe_r": 7,
+    "twist_l": 8,
+    "twist_r": 9
+}

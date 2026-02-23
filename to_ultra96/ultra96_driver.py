@@ -71,6 +71,7 @@ class ClientConnection:
 def main(bitstream_path):
     """Execute driver script"""
     main_buffer = np.zeroes((100, 8), dtype='f4')
+    # TODO: window size to match model.ipynb and CNN implementation
     window = np.zeroes((25, 8), dtype='f4')
     model = GestureModel(bitstream_path)
     conn = ClientConnection()

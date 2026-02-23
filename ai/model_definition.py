@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 # 1D CNN -> comparable to RNN with less overhead
-# Input: (8 features, 25 rows)
+# Input: (n features, 25 rows)
 class CNN1DClassifier(nn.Module):
     def __init__(self, input_size, num_classes):
         super(CNN1DClassifier, self).__init__()
@@ -13,7 +13,7 @@ class CNN1DClassifier(nn.Module):
             nn.ReLU(),
             nn.AdaptiveAvgPool1d(1)
         )
-        self.fc = nn.Linear(64, num_classes)        # expects 64 x 8 = 512
+        self.fc = nn.Linear(64, num_classes)
 
     def forward(self, x):
         x = self.conv_block(x)
