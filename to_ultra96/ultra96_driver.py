@@ -6,6 +6,7 @@ from pynq import Overlay, allocate          # pynq logic cannot be tested outsid
 
 # TODO: Consider logging?
 
+# TODO: FIX A LOT OF THIS...
 class GestureModel:
     """
     Encapsulate FPGA AI logic
@@ -59,6 +60,14 @@ class ClientConnection:
 
     def transmit_result(self, result):
         self.sock.sendall(result)
+
+# --------------------------------------------- DATA PROCESSING ---------------------------------------------
+# TODO: copy and tweak from model.ipynb
+def process_raw_signal(df):
+    pass
+
+def engineer_features(df):
+    pass
 
 # --------------------------------------------- MAIN ---------------------------------------------
 """

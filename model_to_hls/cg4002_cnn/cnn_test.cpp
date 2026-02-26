@@ -4,6 +4,7 @@
 int main() {
     // Dummy input
     // TOOD: test with real data
+    //       and format output nicer
     data_t test_input[IN_CH][IN_LEN];
     data_t hardware_output[NUM_CLASSES];
 
@@ -12,9 +13,7 @@ int main() {
             test_input[i][j] = 0.5;
 
     // Test
-    std::cout << "Starting hardware simulation..." << std::endl;
     cnn_top(test_input, hardware_output);
-    std::cout << "Simulation finished!" << std::endl;
 
     data_t max_val = hardware_output[0];
     int prediction = 0;
