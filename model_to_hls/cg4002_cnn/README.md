@@ -6,3 +6,4 @@
 
 ### Testbench files
 - cnn_test.cpp
+- /ai/data/vitis_hls_sample/sample_{gesture}.txt

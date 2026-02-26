@@ -7,6 +7,7 @@ ultra96_vivado
 !ai/data/dummy/dummy_data_maker.ipynb
 !ai/data/raw
 !ai/data/cleaned
+!ai/data/vitis_hls_sample
 !model_to_hls/cg4002_cnn/README.md
 !model_to_hls/cg4002_cnn/cnn_top.h
 !model_to_hls/cg4002_cnn/cnn_top.cpp

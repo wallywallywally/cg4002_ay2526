@@ -1,6 +1,5 @@
 import os
 import torch
-import numpy as np
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 input_path = os.path.join(script_dir, 'cnn_weights.pth')
@@ -14,6 +13,7 @@ def to_cpp(tensor, name):
     return cpp_str
 
 def check_weights():
+    print("Checking weights:")
     for key in model_data.keys():
         print(f"{key}: {len(model_data[key].detach().numpy().flatten())}")
 
@@ -26,6 +26,7 @@ def get_weights_header():
         for key in model_data.keys():
             f.write(to_cpp(model_data[key], key.replace(".", "_")) + "\n")
         f.write('#endif\n')
+    print(f"Weights saved to {output_path}")
 
-# check_weights()
-# get_weights_header()
+check_weights()
+get_weights_header()
