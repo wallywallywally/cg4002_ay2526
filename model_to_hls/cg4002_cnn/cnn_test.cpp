@@ -17,9 +17,16 @@ bool comparePreds(Pred a, Pred b) {
 int main() {
     // TOOD: load a sample for each gesture class
     std::vector<std::string> test_files = {
-        "sample_select_1.txt", 
-        // "sample_back_1.txt", 
-        // "sample_noise.txt"
+        "sample_chop_1.txt",
+        "sample_knead_1.txt",
+        "sample_select_1.txt",
+        "sample_shake_1.txt",
+        "sample_squeeze_1.txt",
+        "sample_stir_1.txt",
+        "sample_swipe_l_1.txt",
+        "sample_swipe_r_1.txt",
+        "sample_twist_l_1.txt",
+        "sample_twist_r_1.txt"
     };
 
     // Match above order
