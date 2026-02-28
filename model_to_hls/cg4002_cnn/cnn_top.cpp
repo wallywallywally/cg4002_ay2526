@@ -32,7 +32,7 @@ void cnn_top(
     #pragma HLS ALLOCATION operation instances=mul limit=8
     #pragma HLS ALLOCATION operation instances=add limit=16
 
-    // --- LAYER 1: Conv1d(8, 32, k=3) ---
+    // --- LAYER 1: Conv1d(8, 32, k=7) ---
     L1_Conv: for(int oc=0; oc < L1_OUT_CH; oc++) {
         for(int i=0; i < L1_WINDOW; i++) {
             #pragma HLS PIPELINE II=16
