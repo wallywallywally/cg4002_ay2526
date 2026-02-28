@@ -3,7 +3,7 @@
 
 #include "ap_fixed.h"
 
-typedef ap_fixed<16, 6> data_t;
+typedef ap_fixed<32, 12> data_t;
 
 #define IN_CH 30                    // 30 features
 #define IN_LEN 25                   // 25 rows - match window size

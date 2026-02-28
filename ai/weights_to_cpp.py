@@ -22,7 +22,7 @@ def get_weights_header():
         f.write("#ifndef WEIGHT_H\n")
         f.write("#define WEIGHT_H\n")
         f.write('#include "ap_fixed.h"\n')
-        f.write('typedef ap_fixed<16, 6> data_t;\n')
+        f.write('typedef ap_fixed<32, 12> data_t;\n')                       # only data type that can fit our huge CNN logits
         for key in model_data.keys():
             f.write(to_cpp(model_data[key], key.replace(".", "_")) + "\n")
         f.write('#endif\n')

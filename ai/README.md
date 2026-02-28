@@ -28,6 +28,8 @@ In Vivado:
 2. Create block design
    - Add Zynq Ultrascale+ MPSoC, then Run Block Automation
    - Add model IP block to Settings > IP > Repository, then Run Connection Automation > M_AXI_HPM0_FPD
+      - If a new version of the IP block is created, Settings > IP > Repository > Refresh All
+      - Report IP Status should show up at the top, and then Upgrade Selected
    - Customise Zynq block > PS-PL Configuration> PS-PL Interfaces
       - Slave Interface > AXI HP > HPC0 FPD > enable
       - Master Interface > AXI HPM1 FPD > disable
