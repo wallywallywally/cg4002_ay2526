@@ -5,12 +5,16 @@ import torch.nn as nn
 # Input: (n features, 25 rows)
 class CNN1DClassifier(nn.Module):
     def __init__(self, input_size, num_classes):
-        super(CNN1DClassifier, self).__init__()
+        super().__init__()
+
         self.conv_block = nn.Sequential(
-            nn.Conv1d(in_channels=input_size, out_channels=32, kernel_size=3),
-            nn.ReLU(),
+            nn.Conv1d(in_channels=input_size, out_channels=32, kernel_size=7),
+            nn.LeakyReLU(0.1),
+            nn.Dropout(0.2),            # nothing in HLS
+
             nn.Conv1d(32, 64, kernel_size=3),
-            nn.ReLU(),
+            nn.LeakyReLU(0.1),
+
             nn.AdaptiveAvgPool1d(1)
         )
         self.fc = nn.Linear(64, num_classes)
@@ -22,7 +26,7 @@ class CNN1DClassifier(nn.Module):
     
 class LSTMClassifier(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, num_classes):
-        super(LSTMClassifier, self).__init__()
+        super().__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         
@@ -40,7 +44,7 @@ class LSTMClassifier(nn.Module):
 # 3-layer MLP -> worst
 class MLPClassifier(nn.Module):
     def __init__(self, input_size, num_classes, dropout_rate=0.2):
-        super(MLPClassifier, self).__init__()
+        super().__init__()
         self.network = nn.Sequential(
             nn.Flatten(),
             nn.Linear(input_size, 128),

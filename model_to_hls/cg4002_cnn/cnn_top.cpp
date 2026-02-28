@@ -38,16 +38,14 @@ void cnn_top(
             #pragma HLS PIPELINE II=8
             ap_fixed<32, 12> sum = conv_block_0_bias[oc];
             for(int ic=0; ic < IN_CH; ic++) {
-                for(int k=0; k < KERNEL_SIZE; k++) {
-                    int idx = (oc * IN_CH * KERNEL_SIZE) + (ic * KERNEL_SIZE) + k;
+                for(int k=0; k < KERNEL_SIZE_1; k++) {
+                    int idx = (oc * IN_CH * KERNEL_SIZE_1) + (ic * KERNEL_SIZE_1) + k;
                     sum += (ap_fixed<32,12>)local_in[ic][i+k] * (ap_fixed<32,12>)conv_block_0_weight[idx];
                 }
             }
             
-            if (sum > 0)
-                layer1_out[oc][i] = (data_t)sum;
-            else
-                layer1_out[oc][i] = 0;
+            // LeakyReLU
+            layer1_out[oc][i] = (sum > 0) ? (data_t)sum : (data_t)(sum * 0.1);
         }
     }
 
@@ -57,16 +55,13 @@ void cnn_top(
             #pragma HLS PIPELINE II=8
             ap_fixed<32, 12> sum = conv_block_2_bias[oc];
             for(int ic=0; ic < L1_OUT_CH; ic++) {
-                for(int k=0; k < KERNEL_SIZE; k++) {
-                    int idx = (oc * L1_OUT_CH * KERNEL_SIZE) + (ic * KERNEL_SIZE) + k;
+                for(int k=0; k < KERNEL_SIZE_2; k++) {
+                    int idx = (oc * L1_OUT_CH * KERNEL_SIZE_2) + (ic * KERNEL_SIZE_2) + k;
                     sum += (ap_fixed<32,12>)layer1_out[ic][i+k] * (ap_fixed<32,12>)conv_block_2_weight[idx];
                 }
             }
             
-            if (sum > 0)
-                layer2_out[oc][i] = (data_t)sum;
-            else
-                layer2_out[oc][i] = 0;
+            layer2_out[oc][i] = (sum > 0) ? (data_t)sum : (data_t)(sum * 0.1);
         }
     }
 
