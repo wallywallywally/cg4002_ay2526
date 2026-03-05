@@ -1,39 +1,15 @@
-import json
+import os
 import time
+import json
 import socket
+import pandas as pd
 import numpy as np
-from pynq import Overlay, allocate          # pynq logic cannot be tested outside the Ultra96
-
-# TODO: Consider logging?
-
-# TODO: FIX A LOT OF THIS...
-class GestureModel:
-    """
-    Encapsulate FPGA AI logic
-    """
-    def __init__(self, bitstream_path):
-        self.overlay = Overlay(bitstream_path)
-        self.dma = self.overlay.axi_dma_0       # TODO: match names with Vivado  
-        
-        # PYNQ buffers for AI prediction
-        self.in_buffer = allocate(shape=(25, 8), dtype='f4')
-        self.out_buffer = allocate(shape=(8,), dtype='f4')
-
-    def predict(self, window_data):
-        # TODO: ensure model can accept the in_buffer shape
-        self.in_buffer[:] = window_data
-        
-        self.dma.sendchannel.transfer(self.in_buffer)
-        self.dma.recvchannel.transfer(self.out_buffer)
-        self.dma.sendchannel.wait()
-        self.dma.recvchannel.wait()
-        
-        return np.argmax(self.out_buffer)
+from model import CNN, process_window           # Import our custom CNN
 
 # --------------------------------------------- COMMS CODE ---------------------------------------------
-"""
-TODO: Yiting
 
+"""
+TODO (Yiting)
 Feel free to change whatever btw, this is just some boilerplate
 """
 class ClientConnection:
@@ -51,54 +27,85 @@ class ClientConnection:
                 print(f"Connection failed, retrying in {retry_time}s")
                 time.sleep(retry_time)
 
-    def receive_live_data(self, buffer):
-        """Receive HW JSON data"""
-        # add on to the end of buffer
-        # I'm thinking we receive the latest sensor data
-        # Maybe also timestamped so the code knows whether to add to sliding window?
-        data, addr = self.sock.recvfrom(self.RECVSIZE)
+    def receive_input(self):
+        data, addr = self.sock.recvfrom(self.RECVSIZE)              # blocking
+        sample = np.fromstring(data.decode('utf-8'), sep=',')       # e.g. "1,2,3,4,5,6"
 
-    def transmit_result(self, result):
+        # Basic validation
+        if sample.size == CNN.RAW_CH:
+            return sample, addr
+        return None, None
+
+    def send_output(self, result):
         self.sock.sendall(result)
 
-# --------------------------------------------- DATA PROCESSING ---------------------------------------------
-# TODO: copy and tweak from model.ipynb
-def process_raw_signal(df):
-    pass
-
-def engineer_features(df):
-    pass
-
 # --------------------------------------------- MAIN ---------------------------------------------
-"""
-1. Receive sensor data from ESP32 via TCP socket
-2. Update 500ms sliding window buffer by managing old and new data
-3. Trigger FPGA fabric to process current window by streaming buffer via AXI DMA X
-4. Retrieve classification result and process against confidence threshold
-5. Transmit result to Unity game engine for game state updates
-"""
+
+LOG_FILE = f"log_{time.strftime('%Y%m%d_%H%M%S')}.csv"
+COLUMN_ORDER = ["timestamp", "id", "confidence", "PS_power", "PL_power", "move_in", "inference", "move_out", "total"]
+
 def main(bitstream_path):
-    """Execute driver script"""
-    main_buffer = np.zeroes((100, 8), dtype='f4')
-    # TODO: window size to match model.ipynb and CNN implementation
-    window = np.zeroes((25, 8), dtype='f4')
-    model = GestureModel(bitstream_path)
+    # Setup logging
+    perf_log = []
+
+    with open("gesture_map.json", "r") as file:
+        raw_map = json.load(file)
+    gesture_map = {int(v): k for k, v in raw_map.items()}
+
+    cnn = CNN(bitstream_path)
+    window = np.zeros((CNN.IN_LEN, CNN.IN_CH), dtype='f4')
+
+    # TODO (Yiting): connection setup
     conn = ClientConnection()
-    
+
+    # Measure idle power over first 5s
+    samples = list()
+    start_time = time.time()
+    while (time.time() - start_time) < 5:
+        samples.append((cnn.get_current_power()))
+        time.sleep(0.2)
+    print(f"Avg PS power: {sum(s[0] for s in samples) / len(samples)} W")
+    print(f"Avg PL power: {sum(s[1] for s in samples) / len(samples)} W")
+
     while True:
-        # TODO: continue implementing architecture
+        # TODO (Yiting): input
+        new_sample, addr = conn.receive_input()
 
-        # 1. Ingest data
-        conn.receive_live_data(main_buffer)
-        # Into main_buffer
+        if new_sample is not None:
+            # Update sliding window
+            window = np.roll(window, -1, axis=0)
+            window[-1, :] = new_sample
+            # window[-1, :] = np.random.uniform(low=-1.0, high=1.0, size=(CNN.IN_CH,)).astype('f4')           # stub for testing
+            sample_for_pred = process_window(window)
 
-        # 2. Update sliding window
-        window = ...
+            # Predict and process (or done by Vis?)
+            pred_id, logits, metrics = cnn.predict_timed(sample_for_pred.T)
+            metrics["PS_power"], metrics["PL_power"] = cnn.get_current_power()
 
-        # 3. Predict and process
-        result = model.predicts(window)
-        # TODO: process result against some threshold or whatever
-        
-        # 4. Transmit to Unity
-        conn.transmit_result(result)
+            # Log
+            metrics["timestamp"] = time.time()
+            metrics["id"] = pred_id
+            metrics["confidence"] = logits[pred_id]
+            perf_log.append(metrics)
 
+            if len(perf_log) >= 500:                # to tweak?
+                df = pd.DataFrame(perf_log)
+                df = df[COLUMN_ORDER]
+                df.to_csv(LOG_FILE, mode='a', index=False, header=not os.path.exists(LOG_FILE))
+                perf_log = []
+
+            # Transmit output
+            result = {
+                "id": pred_id,
+                "gesture": gesture_map[pred_id],
+                "confidence": logits[pred_id]
+            }
+
+            # TODO (Yiting): output
+            conn.send_output(result)
+
+bitstream_path = "cnn.bit"
+main(bitstream_path)
+
+# Run this file with:
+# sudo -E $(which python) ultra96_driver.py
