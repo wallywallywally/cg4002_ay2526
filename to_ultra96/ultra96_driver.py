@@ -1,6 +1,5 @@
 import os
 import time
-import json
 import socket
 import pandas as pd
 import numpy as np
@@ -48,10 +47,6 @@ def main(bitstream_path):
     # Setup logging
     perf_log = []
 
-    with open("gesture_map.json", "r") as file:
-        raw_map = json.load(file)
-    gesture_map = {int(v): k for k, v in raw_map.items()}
-
     cnn = CNN(bitstream_path)
     window = np.zeros((CNN.IN_LEN, CNN.IN_CH), dtype='f4')
 
@@ -97,7 +92,7 @@ def main(bitstream_path):
             # Transmit output
             result = {
                 "id": pred_id,
-                "gesture": gesture_map[pred_id],
+                "gesture": CNN.GESTURE_MAP[pred_id],
                 "confidence": logits[pred_id]
             }
 

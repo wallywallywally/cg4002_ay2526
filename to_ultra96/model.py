@@ -1,4 +1,5 @@
 import time
+import json
 import numpy as np
 from scipy.ndimage import uniform_filter1d
 from pynq import Overlay, allocate, get_rails
@@ -12,6 +13,10 @@ class CNN:
     NUM_CLASSES = 10
 
     CONTROL_REGISTER = 0x00
+
+    with open("gesture_map.json", "r") as file:
+        raw_map = json.load(file)
+    GESTURE_MAP = {int(v): k for k, v in raw_map.items()}
     
     """
     Setup CNN IP block and input/output buffers
