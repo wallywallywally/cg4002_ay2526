@@ -96,6 +96,15 @@ class CNN:
         ps_watt = self.rails["PSINT_FP"].power.value + self.rails["PSINT_LP"].power.value
         pl_watt = self.rails["INT"].power.value
         return ps_watt, pl_watt
+
+    def get_idle_power(self, time=5, interval=0.2):
+        samples = list()
+        start_time = time.time()
+        while (time.time() - start_time) < time:
+            samples.append((self.get_current_power()))
+            time.sleep(interval)
+        print(f"Avg PS power: {sum(s[0] for s in samples) / len(samples)} W")
+        print(f"Avg PL power: {sum(s[1] for s in samples) / len(samples)} W")
         
 # --------------------------------------------- DATA PROCESSING ---------------------------------------------
 

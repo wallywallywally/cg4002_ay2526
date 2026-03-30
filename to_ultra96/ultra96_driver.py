@@ -54,13 +54,7 @@ def main(bitstream_path):
     conn = ClientConnection()
 
     # Measure idle power over first 5s
-    samples = list()
-    start_time = time.time()
-    while (time.time() - start_time) < 5:
-        samples.append((cnn.get_current_power()))
-        time.sleep(0.2)
-    print(f"Avg PS power: {sum(s[0] for s in samples) / len(samples)} W")
-    print(f"Avg PL power: {sum(s[1] for s in samples) / len(samples)} W")
+    cnn.get_idle_power()
 
     while True:
         # TODO (Yiting): input
