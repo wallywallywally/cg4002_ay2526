@@ -1,0 +1,11 @@
+{
+    "chop": 0,
+    "select": 1,
+    "shake": 2,
+    "squeeze": 3,
+    "stir": 4,
+    "swipe_l": 5,
+    "swipe_r": 6,
+    "twist_l": 7,
+    "twist_r": 8
+}
