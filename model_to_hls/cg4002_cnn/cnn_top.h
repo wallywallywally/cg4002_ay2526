@@ -8,7 +8,7 @@ typedef ap_fixed<32, 12> data_t;
 #define IN_CH 30                    // 30 features
 #define IN_LEN 25                   // 25 rows - match window size
 #define TOTAL_IN (IN_CH * IN_LEN)
-#define NUM_CLASSES 10              // 10 gestures
+#define NUM_CLASSES 9              // 10 gestures
 
 // Layer-specific
 #define KERNEL_SIZE_1 7
