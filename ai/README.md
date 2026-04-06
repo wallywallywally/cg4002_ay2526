@@ -12,7 +12,8 @@ In Vitis IDE:
 3. Add test bench files
    - Pass data into the model and check output
    - Used for C Simulation and C/RTL Cosimulation
-3. Run flow programmes
+4. Run flow programmes
+   - NOTE: If C-Sim fails after the above steps, delete model_to_hls/cg4002_cnn/cg4002_cnn and let Vitis regenerate
    - C Simulation: check if C++ model runs and results are in line with Pytorch model
    - C Synthesis: generate RTL and check utilisation estimates (area)
    - C/RTL Cosimulation: measure inference latency in clock cycles
