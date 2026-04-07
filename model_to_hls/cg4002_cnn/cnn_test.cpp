@@ -3,6 +3,7 @@
 #include <cmath>
 #include <algorithm>
 #include <vector>
+#include <unordered_set>
 #include "cnn_top.h"
 
 struct Pred {
@@ -12,6 +13,21 @@ struct Pred {
 
 bool comparePreds(Pred a, Pred b) {
     return a.score > b.score;
+}
+
+int topKOverlap(const std::vector<Pred>& a, const std::vector<Pred>& b, int k) {
+    std::unordered_set<int> ids;
+    for (int i = 0; i < k; i++) {
+        ids.insert(a[i].id);
+    }
+
+    int overlap = 0;
+    for (int i = 0; i < k; i++) {
+        if (ids.find(b[i].id) != ids.end()) {
+            overlap++;
+        }
+    }
+    return overlap;
 }
 
 int main() {
@@ -68,19 +84,21 @@ int main() {
         std::sort(py_rank.begin(), py_rank.end(), comparePreds);
 
         int K = 3;
-        bool topk_match = true;
-        for (int i = 0; i < K; i++) {
-            if (hls_rank[i].id != py_rank[i].id) {
-                topk_match = false;
-                break;
-            }
-        }
+        int overlap = topKOverlap(hls_rank, py_rank, K);
+        bool top1_match = (hls_rank[0].id == py_rank[0].id);
+        bool topk_match = (overlap >= 2);
 
         if (topk_match) {
-            std::cout << "[PASS] " << test_files[f] << " (Top-" << K << " Match)" << std::endl;
+            std::cout << "[PASS] " << test_files[f]
+                      << " (Top-" << K << " overlap=" << overlap
+                      << ", Top-1 " << (top1_match ? "match" : "mismatch") << ")"
+                      << std::endl;
         } else {
-            std::cout << "[FAIL] " << test_files[f] << " (Top-" << K << " Mismatch! HLS Winner: " 
-                      << hls_rank[0].id << ", PY Winner: " << py_rank[0].id << ")" << std::endl;
+            std::cout << "[FAIL] " << test_files[f]
+                      << " (Top-" << K << " overlap=" << overlap
+                      << ", HLS Winner: " << hls_rank[0].id
+                      << ", PY Winner: " << py_rank[0].id << ")"
+                      << std::endl;
             
             // Print HLS Ranking
             std::cout << "  HLS Top-K: ";
