@@ -2,8 +2,9 @@ import os
 import torch
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-input_path = os.path.join(script_dir, 'v3/cnn_weights.pth')
-output_path = os.path.join(script_dir, 'v3/weights.h')
+MODEL_VERSION = "2.2"
+input_path = os.path.join(script_dir, f"v{MODEL_VERSION}/cnn_weights.pth")
+output_path = os.path.join(script_dir, f"v{MODEL_VERSION}/weights.h")
 
 model_data = torch.load(input_path, map_location='cpu')
 
