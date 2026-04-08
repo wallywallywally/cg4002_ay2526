@@ -2,7 +2,7 @@ import os
 import torch
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-MODEL_VERSION = "2.2"
+MODEL_VERSION = "2.3"
 input_path = os.path.join(script_dir, f"v{MODEL_VERSION}/cnn_weights.pth")
 output_path = os.path.join(script_dir, f"v{MODEL_VERSION}/weights.h")
 
