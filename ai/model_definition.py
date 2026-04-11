@@ -48,7 +48,7 @@ class MLPClassifier(nn.Module):
         super().__init__()
         self.network = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(input_size, 128),
+            nn.LazyLinear(128),
             nn.BatchNorm1d(128),
             nn.ReLU(),
             nn.Dropout(dropout_rate),
