@@ -3,6 +3,7 @@ ai/__pycache__
 ai/hls4ml_exploration/hls_model
 model_to_hls
 ultra96_vivado
+hls_test
 
 !ai/data/dummy/dummy_data_maker.ipynb
 !ai/data/v*
