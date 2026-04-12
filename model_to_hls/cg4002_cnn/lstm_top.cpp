@@ -70,9 +70,16 @@ void lstm_top(
     #pragma HLS INTERFACE m_axi port=input depth=LSTM_INPUT_SIZE bundle=gmem0
     #pragma HLS INTERFACE m_axi port=output depth=LSTM_NUM_CLASSES bundle=gmem0
     #pragma HLS INTERFACE s_axilite port=return
+    #pragma HLS ALLOCATION operation instances=mul limit=LSTM_MUL_LIMIT
+    #pragma HLS ALLOCATION operation instances=add limit=LSTM_ADD_LIMIT
 
     lstm_data_t local_in[LSTM_IN_CH][LSTM_IN_LEN];
     #pragma HLS BIND_STORAGE variable=local_in type=ram_2p impl=bram
+    #pragma HLS BIND_STORAGE variable=lstm_weight_ih_l0 type=rom_2p impl=bram
+    #pragma HLS BIND_STORAGE variable=lstm_weight_hh_l0 type=rom_2p impl=bram
+    #pragma HLS BIND_STORAGE variable=lstm_weight_ih_l1 type=rom_2p impl=bram
+    #pragma HLS BIND_STORAGE variable=lstm_weight_hh_l1 type=rom_2p impl=bram
+    #pragma HLS BIND_STORAGE variable=lstm_fc_weight type=rom_2p impl=bram
 
     Copy_Input: for (int ch = 0; ch < LSTM_IN_CH; ch++) {
         for (int t = 0; t < LSTM_IN_LEN; t++) {

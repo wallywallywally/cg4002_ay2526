@@ -13,6 +13,10 @@ typedef ap_fixed<32, 12> mlp_data_t;
 #define MLP_H3_SIZE 32
 #define MLP_NUM_CLASSES 9
 
+// HLS resource caps
+#define MLP_MUL_LIMIT 4
+#define MLP_ADD_LIMIT 8
+
 void mlp_top(mlp_data_t input[MLP_IN_CH][MLP_IN_LEN], mlp_data_t output[MLP_NUM_CLASSES]);
 
 #endif
